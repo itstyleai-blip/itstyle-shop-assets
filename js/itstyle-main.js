@@ -11,7 +11,9 @@
   var MO    = BASE + "main_glass_mo.jpg";
   var POPUP = BASE + "popup_glass.jpg";
   // 자사몰 배너는 네이버 mkt 마케팅 링크로 보낸다 (유입 추적 — cta_products.json 규칙)
-  var LINK  = "https://mkt.shopping.naver.com/link/6a60b054da16a67bd50a7f18";
+  // 배너별로 목적지가 다르다 (Billy 지정 2026-07-31)
+  var LINK  = "https://mkt.shopping.naver.com/link/6839104e8f1c490586c4bf3d"; // 강화유리 배너·팝업
+  var TITAN = "https://mkt.shopping.naver.com/link/6a60b054da16a67bd50a7f18"; // 티타늄 패러슈트 배너
   var ID    = "glassFreeSlide";
   var ALT   = "출시기념 강화유리 100% 무료 증정";
 
@@ -39,7 +41,7 @@
       if (t) t.style.display = "none";
       var a = s.querySelector("a");
       if (a && /main_titanium_/.test(im.src)) {
-        a.setAttribute("href", LINK);
+        a.setAttribute("href", TITAN);
         a.setAttribute("target", "_blank");
         a.setAttribute("rel", "noopener");
       }
