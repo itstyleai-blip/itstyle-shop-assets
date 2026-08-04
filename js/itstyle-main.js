@@ -105,6 +105,41 @@
     });
   }
 
+  /* ── 4) 갤럭시워치 하위 카테고리 순서 정리 ───────────────────────────────
+     171(울트라1)·172(8클래식)를 새로 만들었더니 GNB 맨 뒤에 붙어 기종 순서가 뒤죽박죽이 됐다.
+     API의 `display_order` PUT은 **200을 주고도 실제로 반영되지 않아**(무효 응답) 프론트에서 정렬한다.
+     정렬 원칙: 최신 → 구형, 클래식은 해당 기본 모델 바로 뒤.
+     주의: 화면 표시 순서만 바꾼다. 관리자 데이터는 그대로다. */
+  var CATE_ORDER = [125, 73, 74, 75, 150,   // 품목별 (기존 순서 유지)
+                    155,   // 갤럭시워치9/8
+                    172,   // 갤럭시워치8 클래식(46mm)
+                    156,   // 갤럭시워치 울트라2
+                    171,   // 갤럭시워치 울트라1
+                    157,   // 갤럭시워치7·6·5·4
+                    158];  // 갤럭시워치6·4 클래식
+
+  function sortCategories(){
+    var uls = new Set();
+    document.querySelectorAll("li.cate_no_155").forEach(function(li){
+      var ul = li.parentElement;
+      if (ul) uls.add(ul);
+    });
+    uls.forEach(function(ul){
+      var items = [], anchor = null;
+      CATE_ORDER.forEach(function(no){
+        var li = ul.querySelector(":scope > li.cate_no_" + no);
+        if (!li) return;
+        if (!anchor) anchor = li.previousElementSibling;   // 삽입 기준점
+        items.push(li);
+      });
+      if (items.length < 2) return;
+      items.forEach(function(li){
+        if (anchor) { anchor.after(li); anchor = li; }
+        else { ul.insertBefore(li, ul.firstChild); anchor = li; }
+      });
+    });
+  }
+
   /* ── 실행 ──────────────────────────────────────────────────────────── */
   var sel = ".index_ban_100 .swiper-wrapper";
   var ok = inject(document.querySelector(sel));
@@ -124,6 +159,10 @@
 
   // 팝업은 스킨 스크립트가 늦게 초기화하므로 여러 시점에 시도
   [600, 1500, 3000, 5000].forEach(function(ms){ setTimeout(injectPopup, ms); });
+
+  // 카테고리 정렬은 전 페이지 공통(GNB) — DOM이 준비되는 대로 한 번, 이후 보정
+  document.addEventListener("DOMContentLoaded", sortCategories);
+  [400, 1200, 3000].forEach(function(ms){ setTimeout(sortCategories, ms); });
 
   // 겹침 정리: 초기 몇 초는 촘촘히, 이후 모달 닫힘을 감지해 복구
   [300, 900, 1800, 3000, 5000].forEach(function(ms){ setTimeout(stackPopups, ms); });
