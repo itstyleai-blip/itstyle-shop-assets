@@ -140,6 +140,33 @@
     });
   }
 
+  /* ── 5) 상단 띠배너 문구·링크 정정 ────────────────────────────────────
+     실측(2026-09-06) 문제 2가지
+       · 카카오톡 배너가 "1000원 쿠폰"으로 적혀 있으나 실제 발급 쿠폰은
+         **'카카오톡 친구 전용 3,000원 할인'** — 실제보다 낮게 표기해 손해
+       · 그 배너가 카카오 채널이 아니라 **회원가입 페이지**로 연결됨
+     스킨 HTML(#tbanner)이라 API가 없어 여기서 바로잡는다. */
+  var KAKAO_CH = "https://pf.kakao.com/_TrfdK";   // 아이티스타일 ITStyle 편집샵 (200 확인)
+
+  function fixTopBanner(){
+    document.querySelectorAll("#tbanner .swiper-slide a").forEach(function(a){
+      var t = a.textContent || "";
+      if (t.indexOf("카카오톡") < 0) return;
+      // 금액 정정: 1000원 → 3,000원 (strong 태그 안의 숫자만 교체)
+      var st = a.querySelector("strong");
+      if (st && /1[,]?000\s*원?/.test(st.textContent)) st.textContent = "3,000원";
+      else if (st && st.textContent.indexOf("3,000") < 0) st.textContent = "3,000원";
+      // '3,000원쿠폰' 처럼 붙어 보이지 않도록 뒤 텍스트를 다듬는다
+      a.innerHTML = a.innerHTML.replace(/(<\/strong>)\s*쿠폰/, "$1 쿠폰");
+      // 링크: 회원가입 → 카카오 채널
+      if ((a.getAttribute("href") || "").indexOf("pf.kakao.com") < 0) {
+        a.setAttribute("href", KAKAO_CH);
+        a.setAttribute("target", "_blank");
+        a.setAttribute("rel", "noopener");
+      }
+    });
+  }
+
   /* ── 실행 ──────────────────────────────────────────────────────────── */
   var sel = ".index_ban_100 .swiper-wrapper";
   var ok = inject(document.querySelector(sel));
@@ -163,6 +190,10 @@
   // 카테고리 정렬은 전 페이지 공통(GNB) — DOM이 준비되는 대로 한 번, 이후 보정
   document.addEventListener("DOMContentLoaded", sortCategories);
   [400, 1200, 3000].forEach(function(ms){ setTimeout(sortCategories, ms); });
+
+  // 띠배너도 전 페이지 공통. swiper가 loop 복제를 만들므로 몇 차례 더 훑는다
+  document.addEventListener("DOMContentLoaded", fixTopBanner);
+  [300, 900, 2000, 4000].forEach(function(ms){ setTimeout(fixTopBanner, ms); });
 
   // 겹침 정리: 초기 몇 초는 촘촘히, 이후 모달 닫힘을 감지해 복구
   [300, 900, 1800, 3000, 5000].forEach(function(ms){ setTimeout(stackPopups, ms); });
