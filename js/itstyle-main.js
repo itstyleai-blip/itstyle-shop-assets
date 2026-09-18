@@ -151,6 +151,13 @@
   function fixTopBanner(){
     document.querySelectorAll("#tbanner .swiper-slide a").forEach(function(a){
       var t = a.textContent || "";
+      // "5만원쿠폰" → "5만원 쿠폰팩" (2026-09-18)
+      //   실제 가입 혜택은 한 장이 아니라 8장 묶음: 가입 즉시 3,000원 + 금액대별 7장(1천~2만원, 최소주문 조건)
+      //   합계 52,000원. 한 장짜리로 읽히지 않게 '쿠폰팩'으로 표기 (표시광고법)
+      if (t.indexOf("회원가입") >= 0 && !a.dataset.packFixed) {
+        a.dataset.packFixed = "1";
+        a.innerHTML = a.innerHTML.replace(/(5만원)\s*(<\/[a-z]+>)?\s*쿠폰(?!팩)/, "$1$2 쿠폰팩");
+      }
       if (t.indexOf("카카오톡") < 0) return;
       // 금액 정정: 1000원 → 3,000원 (strong 태그 안의 숫자만 교체)
       var st = a.querySelector("strong");
