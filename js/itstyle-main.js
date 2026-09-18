@@ -167,6 +167,26 @@
     });
   }
 
+  /* ── 6) 메인 슬라이드 "애플워치 케이스 모음" 죽은 링크 정정 ──────────────────
+     실측(2026-09-17): 5번째 슬라이드(dae70f35…jpg) 링크가 "/" — 클릭하면 홈으로 되돌아온다.
+     배너 관리에 API 가 없어 이미지 해시 기준으로 [24] 애플워치 카테고리로 보낸다. */
+  var APPLE_BANNER = /dae70f353e8fff1e2657ed1c4a961aec/;
+  var APPLE_CATE   = "/product/list.html?cate_no=24";
+
+  function fixAppleBanner(){
+    document.querySelectorAll(".index_ban_100 .swiper-slide img").forEach(function(im){
+      if (!APPLE_BANNER.test(im.src)) return;
+      var a = im.closest("a");
+      if (!a || a.dataset.appleFixed) return;
+      var href = a.getAttribute("href") || "";
+      if (href === "/" || href === "" || /itstyle\.shop\/?$/.test(href)) {
+        a.setAttribute("href", APPLE_CATE);
+        a.removeAttribute("onclick");
+      }
+      a.dataset.appleFixed = "1";
+    });
+  }
+
   /* ── 실행 ──────────────────────────────────────────────────────────── */
   var sel = ".index_ban_100 .swiper-wrapper";
   var ok = inject(document.querySelector(sel));
@@ -194,6 +214,10 @@
   // 띠배너도 전 페이지 공통. swiper가 loop 복제를 만들므로 몇 차례 더 훑는다
   document.addEventListener("DOMContentLoaded", fixTopBanner);
   [300, 900, 2000, 4000].forEach(function(ms){ setTimeout(fixTopBanner, ms); });
+
+  // 애플워치 배너 링크 — swiper 복제 슬라이드까지 몇 차례
+  document.addEventListener("DOMContentLoaded", fixAppleBanner);
+  [300, 1000, 2500, 5000].forEach(function(ms){ setTimeout(fixAppleBanner, ms); });
 
   // 겹침 정리: 초기 몇 초는 촘촘히, 이후 모달 닫힘을 감지해 복구
   [300, 900, 1800, 3000, 5000].forEach(function(ms){ setTimeout(stackPopups, ms); });
