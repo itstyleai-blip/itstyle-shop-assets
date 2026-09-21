@@ -65,7 +65,11 @@ def make(name, photos, title, sub, cta, note=None, dark=False):
         w = seg if i < len(photos) - 1 else W - PANEL - seg * (len(photos) - 1)
         im.paste(crop_at(p, w, H, cx, cy), (PANEL + seg * i, 0))
     d = ImageDraw.Draw(im)
-    d.text((190, 300), title, font=F("ExtraBold", 104), fill=ink)
+    # 제목이 길면 패널 안에 들어오도록 글자 크기를 줄인다 (사진 경계 침범 방지)
+    ts = 104
+    while d.textlength(title, font=F("ExtraBold", ts)) > PANEL - 190 - 90 and ts > 64:
+        ts -= 4
+    d.text((190, 300 + (104 - ts) // 2), title, font=F("ExtraBold", ts), fill=ink)
     d.text((190, 448), sub, font=F("Medium", 42), fill=sub_c)
     d.text((190, 556), cta, font=F("Bold", 42), fill=GOLD)
     if note:
@@ -82,7 +86,10 @@ def make(name, photos, title, sub, cta, note=None, dark=False):
     else:
         im.paste(crop_at(photos[0][0], W, ph, photos[0][1], photos[0][2]), (0, TH))
     d = ImageDraw.Draw(im)
-    d.text((70, 112), title, font=F("ExtraBold", 86), fill=ink)
+    ts = 86
+    while d.textlength(title, font=F("ExtraBold", ts)) > W - 140 and ts > 56:
+        ts -= 4
+    d.text((70, 112 + (86 - ts) // 2), title, font=F("ExtraBold", ts), fill=ink)
     d.text((70, 232), sub, font=F("Medium", 34), fill=sub_c)
     d.text((70, 292), cta, font=F("Bold", 34), fill=GOLD)
     if note:
@@ -112,11 +119,13 @@ if __name__ == "__main__":
          [(U / "batch_itstyle-190.jpg", 0.5, 0.5), (U / "batch_itstyle-130.jpg", 0.5, 0.5)],
          "스트랩 컬렉션", "가죽 · 메탈 · 스포츠 · 나일론까지 한 자리에", "스트랩 보러 가기 ›")
 
-    # ③ 애플워치 — 자사 스튜디오 + 티타늄 러닝컷(연출)
-    make("band_apple",
-         [(A / "DSC09478.JPG", 0.52, 0.5),
-          (PIC / "Codex 이미지 2026년 9월 21일 오전 10_19_14.png", 0.46, 0.56)],
-         "애플워치", "케이스 · 보호필름 · 티타늄 스트랩까지", "애플워치 보러 가기 ›", note=NOTE_AI)
+    # ③ 애플워치 티타늄 패러슈트 — 랜딩이 네이버 13740591188(mkt 6aa0e69f…)로 확정돼
+    #    사진·문구를 그 상품에 맞춘다 (2026-09-21). 이전 판의 스튜디오컷은 '링크 브레이슬릿'이라 제외
+    make("band_apple2",
+         [(PIC / "Codex 이미지 2026년 9월 21일 오전 10_08_11.png", 0.50, 0.55),   # 수영장 · 울트라 + 패러슈트 버클
+          (PIC / "Codex 이미지 2026년 9월 21일 오전 10_19_19.png", 0.48, 0.44)],  # 여성 러닝 세로컷
+         "애플워치 티타늄 패러슈트", "시리즈12 · 울트라4까지 · 순도 99% 티타늄 35g",
+         "지금 보러 가기 ›", note=NOTE_AI)
 
     # ④ 이벤트 섹션 2종 — 함수가 아래에 정의돼 있어 파일 끝에서 호출한다
 

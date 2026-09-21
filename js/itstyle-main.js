@@ -20,14 +20,14 @@
   /* ── 티타늄 패러슈트 메인 배너 (2026-09-21) ──────────────────────────────
      Billy: "자사몰도 우리 티타늄 패러슈트가 메인 제품이다. 메인 배너에 달고,
              갤럭시워치·애플워치 모든 스마트워치에 가능하게 판매한다."
-     기존 티타늄 배너(main_titanium_*)는 네이버 mkt 로 보내지만, 이 배너는 **자사몰**
-     [181] 티타늄 패러슈트 카테고리(갤럭시 3종 + 애플 1종)로 보낸다. */
+     랜딩은 아래 정책대로 네이버 mkt. (자사몰 [181] 카테고리는 GNB 로 진입) */
   /* 랜딩 정책 (2026-09-21 Billy 지시 · content/_templates/cta_products.json 규칙과 동일)
      "배너는 클릭 유도해서 네이버 mkt 링크로 랜딩" — 자사몰 배너의 목적지는 네이버 mkt(유입 추적).
-     mkt 링크가 없는 배너(애플워치)와 회원가입 배너만 자사몰로 남긴다. */
+     회원가입 배너만 자사몰로 남긴다. (애플워치 mkt 는 9/21 Billy 가 전달·검증) */
   var MKT_TITANIUM = "https://mkt.shopping.naver.com/link/6a60b054da16a67bd50a7f18"; // 티타늄 패러슈트
   var MKT_METAL    = "https://mkt.shopping.naver.com/link/68591b85501108490cdcc2da"; // 워치9·8 메탈 스트랩
   var MKT_CASE     = "https://mkt.shopping.naver.com/link/6a6c206b77b14c40780d7709"; // 울트라2 3in1 케이스
+  var MKT_APPLE_TI = "https://mkt.shopping.naver.com/link/6aa0e69f8a20a72cfec8832c"; // 애플워치12 티타늄 패러슈트 (네이버 13740591188, Billy 검증 9/21)
 
   var TI_ID   = "titaniumSeriesSlide";
   var TI_PC   = BASE + "main_titanium2_pc.jpg";
@@ -50,10 +50,10 @@
       href: MKT_METAL, ext: 1, alt: "갤럭시워치 스트랩 컬렉션 - 가죽 메탈 스포츠 나일론" },
     { re: /27c55bb2a2c05d5dc0547abf385424c5/, img: BASE + "band_strap_mo.jpg",
       href: MKT_METAL, ext: 1, alt: "갤럭시워치 스트랩 컬렉션 - 가죽 메탈 스포츠 나일론" },
-    { re: /dae70f353e8fff1e2657ed1c4a961aec/, img: BASE + "band_apple_pc.jpg",
-      href: "/product/list.html?cate_no=24", alt: "애플워치 케이스 보호필름 티타늄 스트랩" },
-    { re: /c6ae8c158ea2f0e50839d03bf4efe213/, img: BASE + "band_apple_mo.jpg",
-      href: "/product/list.html?cate_no=24", alt: "애플워치 케이스 보호필름 티타늄 스트랩" },
+    { re: /dae70f353e8fff1e2657ed1c4a961aec/, img: BASE + "band_apple2_pc.jpg",
+      href: MKT_APPLE_TI, ext: 1, alt: "애플워치 티타늄 패러슈트 밀레니즈 루프 스트랩 - 시리즈12 울트라4 전 기종" },
+    { re: /c6ae8c158ea2f0e50839d03bf4efe213/, img: BASE + "band_apple2_mo.jpg",
+      href: MKT_APPLE_TI, ext: 1, alt: "애플워치 티타늄 패러슈트 밀레니즈 루프 스트랩 - 시리즈12 울트라4 전 기종" },
     /* 이벤트 섹션(index_ban_400) — 스킨 기본 이미지
        m__bn_402 는 **타임엑스 스누피·찰리브라운 시계** 사진이었다(타사 제품 + 라이선스 캐릭터)
        p__bn_403 은 "최대 30% + 친구추가 1,000원 쿠폰" 표기였으나 실제 카카오 쿠폰은 3,000원 */
