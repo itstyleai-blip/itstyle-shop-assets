@@ -46,11 +46,35 @@
     { re: /dae70f353e8fff1e2657ed1c4a961aec/, img: BASE + "band_apple_pc.jpg",
       href: "/product/list.html?cate_no=24", alt: "애플워치 케이스 보호필름 티타늄 스트랩" },
     { re: /c6ae8c158ea2f0e50839d03bf4efe213/, img: BASE + "band_apple_mo.jpg",
-      href: "/product/list.html?cate_no=24", alt: "애플워치 케이스 보호필름 티타늄 스트랩" }
+      href: "/product/list.html?cate_no=24", alt: "애플워치 케이스 보호필름 티타늄 스트랩" },
+    /* 이벤트 섹션(index_ban_400) — 스킨 기본 이미지
+       m__bn_402 는 **타임엑스 스누피·찰리브라운 시계** 사진이었다(타사 제품 + 라이선스 캐릭터)
+       p__bn_403 은 "최대 30% + 친구추가 1,000원 쿠폰" 표기였으나 실제 카카오 쿠폰은 3,000원 */
+    { re: /SkinImg\/m__bn_402\.jpg/, img: BASE + "band_event_metal.jpg",
+      href: "/product/list.html?cate_no=73", alt: "메탈 스트랩 - 밀레니즈 메쉬 링크 브레이슬릿 티타늄" },
+    { re: /SkinImg\/p__bn_403\.jpg/, img: BASE + "band_event_member.jpg",
+      href: "/member/join.html", alt: "공식몰 회원 혜택 - 가입 즉시 쿠폰 8장 합계 52,000원" },
+    { re: /SkinImg\/m__bn_403\.jpg/, img: BASE + "band_event_member_mo.jpg",
+      href: "/member/join.html", alt: "공식몰 회원 혜택 - 가입 즉시 쿠폰 8장 합계 52,000원" }
   ];
 
-  function swapOldBanners(){
+  /* 슬라이드 3(main_titanium_pc/mo)은 7/28 사전예약 배너로 **98,000원**이 박혀 있다.
+     현재 판매가는 118,000~128,000원 → 표시광고 문제라 노출에서 내린다.
+     (파일은 지우지 않는다. 가격을 새로 박아 다시 쓰려면 배너만 갈아끼우면 된다) */
+  function hideStaleTitanium(){
     document.querySelectorAll(".index_ban_100 img").forEach(function(im){
+      if (!/main_titanium_(pc|mo)\.jpg/.test(im.src)) return;
+      var s = im.closest(".swiper-slide");
+      if (s && !s.dataset.staleHidden) {
+        s.dataset.staleHidden = "1";
+        s.style.setProperty("display", "none", "important");
+      }
+    });
+  }
+
+  function swapOldBanners(){
+    hideStaleTitanium();
+    document.querySelectorAll(".index_ban_100 img, .index_ban_400 img").forEach(function(im){
       if (im.dataset.swapped) return;
       for (var i = 0; i < SWAP.length; i++) {
         if (!SWAP[i].re.test(im.src)) continue;

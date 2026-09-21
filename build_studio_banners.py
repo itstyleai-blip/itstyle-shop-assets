@@ -117,3 +117,47 @@ if __name__ == "__main__":
          [(A / "DSC09478.JPG", 0.52, 0.5),
           (PIC / "Codex 이미지 2026년 9월 21일 오전 10_19_14.png", 0.46, 0.56)],
          "애플워치", "케이스 · 보호필름 · 티타늄 스트랩까지", "애플워치 보러 가기 ›", note=NOTE_AI)
+
+    # ④ 이벤트 섹션 2종 — 함수가 아래에 정의돼 있어 파일 끝에서 호출한다
+
+
+# ── 이벤트 섹션(index_ban_400) 교체본 — 2026-09-21 ─────────────────────────
+#   기존 m__bn_402 : 타임엑스 스누피/찰리브라운 시계 사진 (타사 제품 + 라이선스 캐릭터)
+#   기존 p__bn_403 : "최대 30% + 친구추가 1,000원 쿠폰" (실제 카카오 쿠폰은 3,000원)
+def make_event(name, size, photo, cxy, label, title, body, cta, dark):
+    W, H = size
+    ink, sub_c, bg = ((255, 255, 255), (214, 214, 216), (18, 18, 20)) if dark else (INK, SUB, BG)
+    im = Image.new("RGB", (W, H), bg)
+    pw = int(W * 0.46)
+    im.paste(crop_at(photo, pw, int(H * 0.76), *cxy), (W - pw - int(W * 0.05), int(H * 0.12)))
+    d = ImageDraw.Draw(im)
+    x = int(W * 0.07)
+    d.rounded_rectangle([x, int(H * 0.17), x + 20 + int(len(label) * 13.5), int(H * 0.17) + 44],
+                        radius=22, fill=GOLD)
+    d.text((x + 16, int(H * 0.17) + 10), label, font=F("SemiBold", 22), fill=(255, 255, 255))
+    d.text((x, int(H * 0.28)), title, font=F("ExtraBold", int(H * 0.095)), fill=ink)
+    d.multiline_text((x, int(H * 0.50)), body, font=F("Medium", int(H * 0.036)), fill=sub_c, spacing=14)
+    d.rounded_rectangle([x, int(H * 0.70), x + 300, int(H * 0.70) + 72], radius=36, fill=GOLD)
+    d.text((x + 42, int(H * 0.70) + 20), cta, font=F("Bold", 28), fill=(255, 255, 255))
+    im.save(OUT / f"{name}.jpg", quality=88, optimize=True)
+    print(f"{name}: {(OUT / f'{name}.jpg').stat().st_size//1024}KB {W}x{H}")
+
+
+def build_events():
+    make_event("band_event_metal", (1440, 964), U / "batch_itstyle-084.jpg", (0.5, 0.5),
+               "NEW ARRIVAL", "METAL MOMENT",
+               "밀레니즈 메쉬 · 링크 브레이슬릿 · 티타늄까지\n손목 위 단단한 인상, 매일 차도 질리지 않는 무게감.",
+               "메탈 스트랩 보기", dark=False)
+    make_event("band_event_member", (1920, 1040), U / "batch_itstyle-100.jpg", (0.5, 0.5),
+               "OFFICIAL STORE", "공식몰 회원 혜택",
+               "가입 즉시 쿠폰 8장, 합계 52,000원.\n금액대별 7장 + 카카오 친구추가 3,000원.",
+               "회원가입 하기", dark=True)
+    # 모바일 슬롯 (m__bn_403 = 970x650)
+    make_event("band_event_member_mo", (970, 650), U / "batch_itstyle-100.jpg", (0.5, 0.5),
+               "OFFICIAL STORE", "공식몰 회원 혜택",
+               "가입 즉시 쿠폰 8장\n합계 52,000원",
+               "회원가입 하기", dark=True)
+
+
+if __name__ == "__main__":
+    build_events()
