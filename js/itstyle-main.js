@@ -22,10 +22,17 @@
              갤럭시워치·애플워치 모든 스마트워치에 가능하게 판매한다."
      기존 티타늄 배너(main_titanium_*)는 네이버 mkt 로 보내지만, 이 배너는 **자사몰**
      [181] 티타늄 패러슈트 카테고리(갤럭시 3종 + 애플 1종)로 보낸다. */
+  /* 랜딩 정책 (2026-09-21 Billy 지시 · content/_templates/cta_products.json 규칙과 동일)
+     "배너는 클릭 유도해서 네이버 mkt 링크로 랜딩" — 자사몰 배너의 목적지는 네이버 mkt(유입 추적).
+     mkt 링크가 없는 배너(애플워치)와 회원가입 배너만 자사몰로 남긴다. */
+  var MKT_TITANIUM = "https://mkt.shopping.naver.com/link/6a60b054da16a67bd50a7f18"; // 티타늄 패러슈트
+  var MKT_METAL    = "https://mkt.shopping.naver.com/link/68591b85501108490cdcc2da"; // 워치9·8 메탈 스트랩
+  var MKT_CASE     = "https://mkt.shopping.naver.com/link/6a6c206b77b14c40780d7709"; // 울트라2 3in1 케이스
+
   var TI_ID   = "titaniumSeriesSlide";
   var TI_PC   = BASE + "main_titanium2_pc.jpg";
   var TI_MO   = BASE + "main_titanium2_mo.jpg";
-  var TI_LINK = "/product/list.html?cate_no=181";
+  var TI_LINK = MKT_TITANIUM;
   var TI_ALT  = "티타늄 패러슈트 밀레니즈 루프 스트랩 - 갤럭시워치 애플워치 전 기종";
 
   /* ── 옛 제조사 CG 배너 교체 (2026-09-21) ────────────────────────────────
@@ -36,13 +43,13 @@
      ※ cate_no=89 는 **존재하지 않는 카테고리**였다(죽은 링크) → 125(케이스)로 교정 */
   var SWAP = [
     { re: /ad97090e2102bf174d61123418b164d3/, img: BASE + "band_gwcase_pc.jpg",
-      href: "/product/list.html?cate_no=125", alt: "갤럭시워치 케이스 - 베젤링 풀커버 하드 컬러별" },
+      href: MKT_CASE, ext: 1, alt: "갤럭시워치 케이스 - 베젤링 풀커버 하드 컬러별" },
     { re: /d116804e8c49652d6e2ab675cc1902d2/, img: BASE + "band_gwcase_mo.jpg",
-      href: "/product/list.html?cate_no=125", alt: "갤럭시워치 케이스 - 베젤링 풀커버 하드 컬러별" },
+      href: MKT_CASE, ext: 1, alt: "갤럭시워치 케이스 - 베젤링 풀커버 하드 컬러별" },
     { re: /0de2e744e8f7ce3d6dba3f66a4438474/, img: BASE + "band_strap_pc.jpg",
-      href: "/product/list.html?cate_no=73", alt: "갤럭시워치 스트랩 컬렉션 - 가죽 메탈 스포츠 나일론" },
+      href: MKT_METAL, ext: 1, alt: "갤럭시워치 스트랩 컬렉션 - 가죽 메탈 스포츠 나일론" },
     { re: /27c55bb2a2c05d5dc0547abf385424c5/, img: BASE + "band_strap_mo.jpg",
-      href: "/product/list.html?cate_no=73", alt: "갤럭시워치 스트랩 컬렉션 - 가죽 메탈 스포츠 나일론" },
+      href: MKT_METAL, ext: 1, alt: "갤럭시워치 스트랩 컬렉션 - 가죽 메탈 스포츠 나일론" },
     { re: /dae70f353e8fff1e2657ed1c4a961aec/, img: BASE + "band_apple_pc.jpg",
       href: "/product/list.html?cate_no=24", alt: "애플워치 케이스 보호필름 티타늄 스트랩" },
     { re: /c6ae8c158ea2f0e50839d03bf4efe213/, img: BASE + "band_apple_mo.jpg",
@@ -51,7 +58,7 @@
        m__bn_402 는 **타임엑스 스누피·찰리브라운 시계** 사진이었다(타사 제품 + 라이선스 캐릭터)
        p__bn_403 은 "최대 30% + 친구추가 1,000원 쿠폰" 표기였으나 실제 카카오 쿠폰은 3,000원 */
     { re: /SkinImg\/m__bn_402\.jpg/, img: BASE + "band_event_metal.jpg",
-      href: "/product/list.html?cate_no=73", alt: "메탈 스트랩 - 밀레니즈 메쉬 링크 브레이슬릿 티타늄" },
+      href: MKT_METAL, ext: 1, alt: "메탈 스트랩 - 밀레니즈 메쉬 링크 브레이슬릿 티타늄" },
     { re: /SkinImg\/p__bn_403\.jpg/, img: BASE + "band_event_member.jpg",
       href: "/member/join.html", alt: "공식몰 회원 혜택 - 가입 즉시 쿠폰 8장 합계 52,000원" },
     { re: /SkinImg\/m__bn_403\.jpg/, img: BASE + "band_event_member_mo.jpg",
@@ -82,7 +89,11 @@
         im.src = SWAP[i].img;
         im.alt = SWAP[i].alt;
         var a = im.closest("a");
-        if (a) { a.setAttribute("href", SWAP[i].href); a.removeAttribute("onclick"); }
+        if (a) {
+          a.setAttribute("href", SWAP[i].href);
+          a.removeAttribute("onclick");
+          if (SWAP[i].ext) { a.setAttribute("target", "_blank"); a.setAttribute("rel", "noopener"); }
+        }
         // 새 배너에는 문구가 이미 들어 있어 스킨 오버레이(.txt)는 가린다
         var s = im.closest(".swiper-slide");
         var t = s && s.querySelector(".txt");
@@ -128,7 +139,7 @@
     d.className = "swiper-slide";
     d.id = TI_ID;
     d.innerHTML =
-      '<a href="' + TI_LINK + '">' +
+      '<a href="' + TI_LINK + '" target="_blank" rel="noopener">' +
       '<div class="img pc_view"><img src="' + TI_PC + '" width="100%" alt="' + TI_ALT + '"></div>' +
       '<div class="img m_view"><img src="' + TI_MO + '" width="100%" alt="' + TI_ALT + '"></div>' +
       '</a>';
