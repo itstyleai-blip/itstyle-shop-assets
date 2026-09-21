@@ -17,6 +17,17 @@
   var ID    = "glassFreeSlide";
   var ALT   = "출시기념 강화유리 100% 무료 증정";
 
+  /* ── 티타늄 패러슈트 메인 배너 (2026-09-21) ──────────────────────────────
+     Billy: "자사몰도 우리 티타늄 패러슈트가 메인 제품이다. 메인 배너에 달고,
+             갤럭시워치·애플워치 모든 스마트워치에 가능하게 판매한다."
+     기존 티타늄 배너(main_titanium_*)는 네이버 mkt 로 보내지만, 이 배너는 **자사몰**
+     [181] 티타늄 패러슈트 카테고리(갤럭시 3종 + 애플 1종)로 보낸다. */
+  var TI_ID   = "titaniumSeriesSlide";
+  var TI_PC   = BASE + "main_titanium2_pc.jpg";
+  var TI_MO   = BASE + "main_titanium2_mo.jpg";
+  var TI_LINK = "/product/list.html?cate_no=181";
+  var TI_ALT  = "티타늄 패러슈트 밀레니즈 루프 스트랩 - 갤럭시워치 애플워치 전 기종";
+
   /* ── 1) 메인 슬라이더에 강화유리 슬라이드를 맨 앞에 추가 ─────────────── */
   function build(){
     var d = document.createElement("div");
@@ -36,7 +47,7 @@
   function fixOurSlides(){
     document.querySelectorAll(".index_ban_100 .swiper-slide").forEach(function(s){
       var im = s.querySelector("img");
-      if (!im || !/main_(glass|titanium)_/.test(im.src)) return;
+      if (!im || !/main_(glass|titanium)_|main_titanium2_/.test(im.src)) return;
       var t = s.querySelector(".txt");
       if (t) t.style.display = "none";
       var a = s.querySelector("a");
@@ -48,16 +59,31 @@
     });
   }
 
+  function buildTitanium(){
+    var d = document.createElement("div");
+    d.className = "swiper-slide";
+    d.id = TI_ID;
+    d.innerHTML =
+      '<a href="' + TI_LINK + '">' +
+      '<div class="img pc_view"><img src="' + TI_PC + '" width="100%" alt="' + TI_ALT + '"></div>' +
+      '<div class="img m_view"><img src="' + TI_MO + '" width="100%" alt="' + TI_ALT + '"></div>' +
+      '</a>';
+    return d;
+  }
+
   function inject(w){
     if (!w) return false;                            // 아직 DOM에 없음 → 감시 계속
     if (document.getElementById(ID)) return true;    // 이미 넣음
     var c = w.closest ? w.closest(".swiper-container") : null;
+    // 순서: ① 티타늄 패러슈트(자사몰 메인 제품) ② 강화유리 증정
     if (c && c.swiper) {
       // 이미 초기화된 뒤라면 swiper API로 넣어야 loop 복제·페이지네이션이 함께 갱신된다
       c.swiper.prependSlide(build().outerHTML);
+      c.swiper.prependSlide(buildTitanium().outerHTML);
       c.swiper.slideTo(0, 0);
     } else {
       w.insertBefore(build(), w.firstChild);         // 초기화 전이면 맨 앞에 그냥 삽입
+      w.insertBefore(buildTitanium(), w.firstChild);
     }
     // swiper가 loop 복제 슬라이드를 나중에 만들므로 몇 차례 더 훑는다
     [0, 300, 1000, 2500].forEach(function(ms){ setTimeout(fixOurSlides, ms); });
