@@ -28,6 +28,46 @@
   var TI_LINK = "/product/list.html?cate_no=181";
   var TI_ALT  = "티타늄 패러슈트 밀레니즈 루프 스트랩 - 갤럭시워치 애플워치 전 기종";
 
+  /* ── 옛 제조사 CG 배너 교체 (2026-09-21) ────────────────────────────────
+     Billy: "예전 중국 제조사에서 준 것 같은 CG 사진들 모두 변경하자.
+             최근 스튜디오 사진들과 내가 공유해준 티타늄 패러슈트 등"
+     카페24 스킨 배너는 API 가 없어 파일 해시로 찾아 src·링크를 바꿔 끼운다.
+     새 배너는 자사 스튜디오 촬영본(베스트 사진 참고 211장) 기반.
+     ※ cate_no=89 는 **존재하지 않는 카테고리**였다(죽은 링크) → 125(케이스)로 교정 */
+  var SWAP = [
+    { re: /ad97090e2102bf174d61123418b164d3/, img: BASE + "band_gwcase_pc.jpg",
+      href: "/product/list.html?cate_no=125", alt: "갤럭시워치 케이스 - 베젤링 풀커버 하드 컬러별" },
+    { re: /d116804e8c49652d6e2ab675cc1902d2/, img: BASE + "band_gwcase_mo.jpg",
+      href: "/product/list.html?cate_no=125", alt: "갤럭시워치 케이스 - 베젤링 풀커버 하드 컬러별" },
+    { re: /0de2e744e8f7ce3d6dba3f66a4438474/, img: BASE + "band_strap_pc.jpg",
+      href: "/product/list.html?cate_no=73", alt: "갤럭시워치 스트랩 컬렉션 - 가죽 메탈 스포츠 나일론" },
+    { re: /27c55bb2a2c05d5dc0547abf385424c5/, img: BASE + "band_strap_mo.jpg",
+      href: "/product/list.html?cate_no=73", alt: "갤럭시워치 스트랩 컬렉션 - 가죽 메탈 스포츠 나일론" },
+    { re: /dae70f353e8fff1e2657ed1c4a961aec/, img: BASE + "band_apple_pc.jpg",
+      href: "/product/list.html?cate_no=24", alt: "애플워치 케이스 보호필름 티타늄 스트랩" },
+    { re: /c6ae8c158ea2f0e50839d03bf4efe213/, img: BASE + "band_apple_mo.jpg",
+      href: "/product/list.html?cate_no=24", alt: "애플워치 케이스 보호필름 티타늄 스트랩" }
+  ];
+
+  function swapOldBanners(){
+    document.querySelectorAll(".index_ban_100 img").forEach(function(im){
+      if (im.dataset.swapped) return;
+      for (var i = 0; i < SWAP.length; i++) {
+        if (!SWAP[i].re.test(im.src)) continue;
+        im.dataset.swapped = "1";
+        im.src = SWAP[i].img;
+        im.alt = SWAP[i].alt;
+        var a = im.closest("a");
+        if (a) { a.setAttribute("href", SWAP[i].href); a.removeAttribute("onclick"); }
+        // 새 배너에는 문구가 이미 들어 있어 스킨 오버레이(.txt)는 가린다
+        var s = im.closest(".swiper-slide");
+        var t = s && s.querySelector(".txt");
+        if (t) t.style.setProperty("display", "none", "important");
+        break;
+      }
+    });
+  }
+
   /* ── 1) 메인 슬라이더에 강화유리 슬라이드를 맨 앞에 추가 ─────────────── */
   function build(){
     var d = document.createElement("div");
@@ -251,6 +291,14 @@
   // 애플워치 배너 링크 — swiper 복제 슬라이드까지 몇 차례
   document.addEventListener("DOMContentLoaded", fixAppleBanner);
   [300, 1000, 2500, 5000].forEach(function(ms){ setTimeout(fixAppleBanner, ms); });
+
+  // 옛 CG 배너 교체 — 복제 슬라이드가 나중에 생기므로 반복 + DOM 감시
+  document.addEventListener("DOMContentLoaded", swapOldBanners);
+  [0, 300, 900, 2000, 4000].forEach(function(ms){ setTimeout(swapOldBanners, ms); });
+  if (window.MutationObserver) {
+    new MutationObserver(function(){ swapOldBanners(); })
+      .observe(document.documentElement, { childList: true, subtree: true });
+  }
 
   // 겹침 정리: 초기 몇 초는 촘촘히, 이후 모달 닫힘을 감지해 복구
   [300, 900, 1800, 3000, 5000].forEach(function(ms){ setTimeout(stackPopups, ms); });
