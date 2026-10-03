@@ -351,3 +351,46 @@
     setTimeout(function(){ bo.disconnect(); }, 20000);
   });
 })();
+
+/* 2026-10-03 Billy 컨펌: 메인 슬라이더 아래 케이스 1+1 배너와 네이버 행사 랜딩. */
+(function(){
+  var id = "itstyleCaseOnePlusOne";
+  var base = "https://raw.githubusercontent.com/itstyleai-blip/itstyle-shop-assets/main/banner/";
+  function insertEventBanner(){
+    var hero = document.querySelector(".index_ban_100");
+    if (!hero || document.getElementById(id)) return;
+    var section = document.createElement("section");
+    section.id = id;
+    section.setAttribute("aria-label", "케이스 1+1 투명증정 이벤트");
+    section.style.cssText = "width:calc(100% - 32px);max-width:1200px;margin:24px auto;box-sizing:border-box;";
+    var link = document.createElement("a");
+    link.href = "https://smartstore.naver.com/eroommarket/category/079d6ece8a0d41fc91f686da8c3cd213?cp=1";
+    link.target = "_blank";
+    link.rel = "noopener";
+    link.setAttribute("aria-label", "스마트스토어 케이스 1+1 행사 상품 보기 (새 창)");
+    link.style.display = "block";
+    var picture = document.createElement("picture");
+    var source = document.createElement("source");
+    source.media = "(max-width:767px)";
+    source.srcset = base + "case_1plus1_mo_20261003.png";
+    var image = document.createElement("img");
+    image.src = base + "case_1plus1_pc_20261003.png";
+    image.alt = "케이스 하나 사면, 투명 하나 더! 행사 표시 케이스 옵션 한정, 같은 종류·기종·사이즈 투명 케이스 1개 증정. 스트랩 단독 구매 제외, 워치 본체 미포함. 스마트스토어 행사 상품 보기.";
+    image.style.cssText = "display:block;width:100%;height:auto;";
+    picture.appendChild(source);
+    picture.appendChild(image);
+    link.appendChild(picture);
+    section.appendChild(link);
+    hero.parentNode.insertBefore(section, hero.nextSibling);
+  }
+  insertEventBanner();
+  document.addEventListener("DOMContentLoaded", insertEventBanner);
+  if (!document.getElementById(id) && window.MutationObserver) {
+    var observer = new MutationObserver(function(){
+      insertEventBanner();
+      if (document.getElementById(id)) observer.disconnect();
+    });
+    observer.observe(document, {childList:true, subtree:true});
+    setTimeout(function(){ observer.disconnect(); }, 20000);
+  }
+})();
