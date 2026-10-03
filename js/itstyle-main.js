@@ -356,6 +356,26 @@
 (function(){
   var id = "itstyleCaseOnePlusOne";
   var base = "https://raw.githubusercontent.com/itstyleai-blip/itstyle-shop-assets/main/banner/";
+  // 승인된 멤버십 팝업만 교체하고 기존 닫기 및 하루 숨김 동작은 보존한다.
+  function replaceMembershipPopup(){
+    document.querySelectorAll('iframe[src*="popup/popup_1.html"]').forEach(function(frame){
+      try {
+        var doc = frame.contentDocument;
+        var link = doc && doc.querySelector('a[href="/member/join.html"]');
+        var img = link && link.querySelector('img');
+        if (!img) return;
+        link.href = "https://smartstore.naver.com/eroommarket/category/079d6ece8a0d41fc91f686da8c3cd213?cp=1";
+        link.target = "_blank";
+        link.rel = "noopener";
+        img.src = base + "case_1plus1_mo_20261003.png";
+        img.alt = "케이스 하나 사면 투명 하나 더! 케이스 1+1 행사 상품 보기";
+        img.style.cssText = "display:block;width:100%;height:auto;";
+      } catch (e) { /* 다른 출처의 프레임은 변경하지 않는다. */ }
+    });
+  }
+  replaceMembershipPopup();
+  var popupTimer = setInterval(replaceMembershipPopup, 500);
+  setTimeout(function(){ clearInterval(popupTimer); }, 20000);
   function insertEventBanner(){
     var hero = document.querySelector(".index_ban_100");
     if (!hero || document.getElementById(id)) return;
